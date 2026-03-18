@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD Vercel</title>
+</head>
+<body>
+
+  <h1>CRUD Simples</h1>
+
+  <input type="text" id="name" placeholder="Nome do item">
+  <button onclick="addItem()">Adicionar</button>
+
+  <ul id="list"></ul>
+
+  <script>
+    const api = "/api";
+
+    async function getItems() {
+      const res = await fetch(api);
+      const data = await res.json();
+
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      data.forEach(item => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+          ${item.name}
+          <button onclick="deleteItem(${item.id})">X</button>
+        `;
+
+        list.appendChild(li);
+      });
+    }
+
+    async function addItem() {
+      const name = document.getElementById("name").value;
+
+      await fetch(api, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+      });
+
+      document.getElementById("name").value = "";
+      getItems();
+    }
+
+    async function deleteItem(id) {
+      await fetch(api, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+
+      getItems();
+    }
+
+    getItems();
+  </script>
+
+</body>
+</html>
