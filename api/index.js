@@ -1,4 +1,4 @@
-let items = [];
+let certificados = [];
 
 export default function handler(req, res) {
 
@@ -13,35 +13,46 @@ export default function handler(req, res) {
 
   const { method } = req;
 
-  // GET
+  // LISTAR
   if (method === "GET") {
-    return res.status(200).json(items);
+    return res.status(200).json(certificados);
   }
 
-  // POST
+  // CRIAR
   if (method === "POST") {
-    const body = req.body || {};
-    const name = body.name;
+    const { nome, instituicao, data, descricao, imagem } = req.body || {};
 
-    if (!name) {
-      return res.status(400).json({ error: "Name é obrigatório" });
-    }
-
-    const newItem = {
+    const novo = {
       id: Date.now(),
-      name
+      nome,
+      instituicao,
+      data,
+      descricao,
+      imagem
     };
 
-    items.push(newItem);
-    return res.status(201).json(newItem);
+    certificados.push(novo);
+    return res.status(201).json(novo);
   }
 
-  // DELETE
-  if (method === "DELETE") {
-    const body = req.body || {};
-    const id = body.id;
+  // ATUALIZAR
+  if (method === "PUT") {
+    const { id, nome, instituicao, data, descricao, imagem } = req.body || {};
 
-    items = items.filter(item => item.id !== id);
+    certificados = certificados.map(item =>
+      item.id === id
+        ? { ...item, nome, instituicao, data, descricao, imagem }
+        : item
+    );
+
+    return res.status(200).json({ message: "Atualizado" });
+  }
+
+  // DELETAR
+  if (method === "DELETE") {
+    const { id } = req.body || {};
+
+    certificados = certificados.filter(item => item.id !== id);
 
     return res.status(200).json({ message: "Deletado" });
   }
