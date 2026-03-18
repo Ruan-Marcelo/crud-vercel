@@ -13,14 +13,18 @@ export default function handler(req, res) {
 
   const { method } = req;
 
-  // LISTAR
+  // GET
   if (method === "GET") {
     return res.status(200).json(certificados);
   }
 
-  // CRIAR
+  // POST
   if (method === "POST") {
     const { nome, instituicao, data, descricao, imagem } = req.body || {};
+
+    if (!nome) {
+      return res.status(400).json({ error: "Nome é obrigatório" });
+    }
 
     const novo = {
       id: Date.now(),
@@ -35,7 +39,7 @@ export default function handler(req, res) {
     return res.status(201).json(novo);
   }
 
-  // ATUALIZAR
+  // PUT
   if (method === "PUT") {
     const { id, nome, instituicao, data, descricao, imagem } = req.body || {};
 
@@ -48,7 +52,7 @@ export default function handler(req, res) {
     return res.status(200).json({ message: "Atualizado" });
   }
 
-  // DELETAR
+  // DELETE
   if (method === "DELETE") {
     const { id } = req.body || {};
 
